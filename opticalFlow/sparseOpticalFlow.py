@@ -15,12 +15,13 @@ feature_params = dict(maxCorners = 20,
 
 
 # trajectory = "Flugbahn"
-trajectory_len = 40
-detect_interval = 5
+trajectory_len = 20 # 40 Anzahl der Punkte in einem trajectory
+detect_interval = 5 # Update Frequenz
 trajectories = []
 frame_idx = 0
 
 
+# Öffne Webcam
 cap = cv2.VideoCapture(0)
 
 
@@ -30,22 +31,22 @@ while True:
     start = time.time()
 
     suc, frame = cap.read()
-    frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    frame_gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY) # Graustufenbild
     img = frame.copy()
 
-    # Calculate optical flow for a sparse feature set using the iterative Lucas-Kanade Method
+    # Berechne optical flow für ein "sparse feature set" mit der iterativen Lucas-Kanade Methode
     if len(trajectories) > 0:
         img0, img1 = prev_gray, frame_gray
         p0 = np.float32([trajectory[-1] for trajectory in trajectories]).reshape(-1, 1, 2)
         p1, _st, _err = cv2.calcOpticalFlowPyrLK(img0, img1, p0, None, **lk_params)
         p0r, _st, _err = cv2.calcOpticalFlowPyrLK(img1, img0, p1, None, **lk_params)
-        d = abs(p0-p0r).reshape(-1, 2).max(-1)
-        good = d < 1
+        d = abs(p0-p0r).reshape(-1, 2).max(-1) # Differenz bilden
+        good = d < 1 # Schwellenwert
 
         new_trajectories = []
 
-        # Get all the trajectories
-        for trajectory, (x, y), good_flag in zip(trajectories, p1.reshape(-1, 2), good):
+        # Hole alle trajectories
+        for trajectory, (x, y), good_flag in zip(trajectories, p1.reshape(-1, 2), good): # gleichzeitiges Durchlaufen
             if not good_flag:
                 continue
             trajectory.append((x, y))
