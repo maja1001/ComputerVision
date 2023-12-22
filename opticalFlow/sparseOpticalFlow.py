@@ -3,16 +3,18 @@ import cv2
 import time
 
 
+# Lucas und Kanade Parameter
 lk_params = dict(winSize  = (15, 15),
-                maxLevel = 2,
-                criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.03))
+                 maxLevel = 2,
+                 criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.03))
 
 feature_params = dict(maxCorners = 20,
-                    qualityLevel = 0.3,
-                    minDistance = 10,
-                    blockSize = 7 )
+                      qualityLevel = 0.3,
+                      minDistance = 10,
+                      blockSize = 7 )
 
 
+# trajectory = "Flugbahn"
 trajectory_len = 40
 detect_interval = 5
 trajectories = []
